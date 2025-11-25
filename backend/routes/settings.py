@@ -1,0 +1,32 @@
+from flask import Blueprint, request
+from utils.common import success_response
+
+settings_bp = Blueprint('settings', __name__, url_prefix='/api/settings')
+
+@settings_bp.route('/', methods=['GET'])
+def get_settings():
+    """설정 조회"""
+    return success_response({
+        'notifications': {
+            'mission': True,
+            'reward': True,
+            'ranking': False
+        },
+        'theme': 'light',
+        'language': 'ko',
+        'privacy': {
+            'show_profile': True,
+            'show_points': True,
+            'show_ranking': False
+        }
+    })
+
+@settings_bp.route('/', methods=['PUT'])
+def update_settings():
+    """설정 수정"""
+    data = request.get_json()
+
+    return success_response({
+        'message': '설정이 저장되었습니다',
+        'settings': data
+    })
