@@ -1,27 +1,33 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint
 from utils.common import success_response
-from models.user import User
-from models.mission import Mission
 
 home_bp = Blueprint('home', __name__, url_prefix='/api/home')
 
 @home_bp.route('/dashboard', methods=['GET'])
 def get_home_dashboard():
-    """홈 대시보드 조회"""
+    """홈 화면 상단 대시보드"""
     return success_response({
-        'greeting': '안녕하세요!',
-        'current_points': 850,
-        'daily_mission_count': 3,
-        'completed_missions': 2,
-        'user_level': 5
+        "greeting": "당신의 실천이 우리 캠퍼스를 푸르게 합니다 🍀",
+        "current_room": {
+            "room_name": "정보문화관 PC34실",
+            "temperature": 23.5,
+            "people": 25,
+            "air_quality": "보통"
+        },
+        "devices": {
+            "ac_count": 7,
+            "light_count": 7,
+            "usage_kwh": 1.2
+        }
     })
 
 @home_bp.route('/quick-stats', methods=['GET'])
 def get_quick_stats():
-    """빠른 통계"""
+    """오늘의 절약 현황 카드"""
     return success_response({
-        'total_points': 5200,
-        'today_earned': 350,
-        'rank': 12,
-        'next_level_progress': 65
+        "today_usage": 0.7,
+        "mission_completed": 2,
+        "earned_points": 120,
+        "dept_avg_comparison": "+12%",
+        "today_growth": "+4%"
     })
