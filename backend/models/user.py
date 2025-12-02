@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+class User:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+=======
 from app import db
 from datetime import datetime
 
@@ -55,3 +61,4 @@ class User(db.Model):
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
         }
 
+>>>>>>> 9f614c7bb64b1d469b67648a4b73423c1a96b00f

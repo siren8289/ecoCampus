@@ -1,3 +1,4 @@
+from routes.point import point_bp
 from flask import Flask
 from models import db
 
@@ -9,17 +10,17 @@ def create_app():
 
     db.init_app(app)
 
-    @app.route("/")
-    def index():
-        return "Flask server running!"
+@app.route('/')
+def index():
+    return {'message': 'EcoCampus API is running', 'status': 'success'}
 
-    # ⚠️ 여기서 Blueprint들도 register 해야 함
-    # from routes.mission import mission_bp
-    # app.register_blueprint(mission_bp)
+@app.route('/health')
+def health():
+    return {'status': 'healthy'}
 
-    return app
+if __name__ == '__main__':
+    port = int(os.getenv('PORT', 5000))
+    debug = os.getenv('FLASK_ENV', 'development') == 'development'
+    app.run(host='0.0.0.0', port=port, debug=debug)
 
-app = create_app()
-
-if __name__ == "__main__":
-    app.run(debug=True)
+app.register_blueprint(point_bp)
