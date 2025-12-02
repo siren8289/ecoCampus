@@ -1,16 +1,13 @@
 from flask import Flask
-from flask_cors import CORS
-from dotenv import load_dotenv
-import os
+from models import db
 
-# Load environment variables
-load_dotenv()
+def create_app():
+    app = Flask(__name__)
 
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Configuration
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+    db.init_app(app)
 
 @app.route('/')
 def index():
@@ -24,3 +21,4 @@ if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     debug = os.getenv('FLASK_ENV', 'development') == 'development'
     app.run(host='0.0.0.0', port=port, debug=debug)
+
