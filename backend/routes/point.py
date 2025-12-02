@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from flask import Blueprint, request
 from utils.common import success_response, error_response
 from models.point import Point
@@ -85,16 +84,3 @@ def use_points():
         'message': f'{amount} 포인트를 사용했습니다',
         'remaining_points': 8500 - amount
     })
-=======
-from flask import Blueprint
-from utils.common import success_response
-
-bp = Blueprint('point', __name__, url_prefix='/api/point')
-
-# TODO: Implement point routes
-# Example:
-# @bp.route('/balance', methods=['GET'])
-# def get_balance():
-#     return success_response({'message': 'Point balance'})
->>>>>>> 9f614c7bb64b1d469b67648a4b73423c1a96b00f
-
