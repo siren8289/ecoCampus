@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-def success_response(data, status=200):
-    return {"status": "success", **data}, status
-
-def error_response(message, status=400):
-    return {"status": "error", "message": message}, status
-=======
 from flask import jsonify
 from typing import Any, Dict, Optional
 
@@ -108,4 +101,3 @@ def forbidden_error(message: str = 'Forbidden') -> tuple:
     return error_response(message=message, status_code=403)
 
 
->>>>>>> 9f614c7bb64b1d469b67648a4b73423c1a96b00f
