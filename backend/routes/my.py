@@ -1,16 +1,5 @@
 from flask import Blueprint
 from utils.common import success_response
-<<<<<<< HEAD
-
-bp = Blueprint('my', __name__, url_prefix='/api/my')
-
-# TODO: Implement my page routes
-# Example:
-# @bp.route('/profile', methods=['GET'])
-# def get_profile():
-#     return success_response({'message': 'User profile'})
-
-=======
 from models.user import User
 
 my_bp = Blueprint('my', __name__, url_prefix='/api/my')
@@ -57,4 +46,3 @@ def get_my_statistics():
         'current_streak': 15,  # 연속 로그인
         'most_completed_category': 'eco'
     })
->>>>>>> feature/ranking-settings

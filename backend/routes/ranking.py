@@ -1,16 +1,5 @@
 from flask import Blueprint
 from utils.common import success_response
-<<<<<<< HEAD
-
-bp = Blueprint('ranking', __name__, url_prefix='/api/ranking')
-
-# TODO: Implement ranking routes
-# Example:
-# @bp.route('/weekly', methods=['GET'])
-# def get_weekly_ranking():
-#     return success_response({'message': 'Weekly ranking'})
-
-=======
 from models.ranking import Ranking
 
 ranking_bp = Blueprint('ranking', __name__, url_prefix='/api/ranking')
@@ -60,4 +49,3 @@ def get_my_ranking():
         'rank_up_points': 500,  # 다음 랭크까지 필요한 포인트
         'total_users': 1000
     })
->>>>>>> feature/ranking-settings
