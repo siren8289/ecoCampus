@@ -1,0 +1,4 @@
+rootProject.name = 'ecoCampus-server'
+
+include 'api'
+include 'sensor'

@@ -1,0 +1,227 @@
+openapi: 3.0.0
+info:
+  title: EcoCampus+ Integrated API
+  version: 1.0.0
+  description: |
+    EcoCampus+ 플랫폼의 통합 API 명세서입니다.
+    IoT 센서 데이터 수집부터 AI 분석, 학생 보상, 관리자 모니터링까지의 데이터 흐름을 정의합니다.
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local Development Server
+
+paths:
+  # [IoT Layer]
+  /sensors/rssi-logs:
+    post:
+      summary: "엣지 정제 비콘 데이터 수집"
+      operationId: postRssiLogs
+      tags:
+        - IoT Layer
+      description: |
+        라즈베리파이에서 감지 및 정제된 비콘 신호 데이터를 서버로 전송합니다.
+        1차 정제된 데이터(Sample Count, Stdev 포함)를 받아 AI 모델의 신뢰도를 확보합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [space_id, beacon_uuid, rssi_value, sample_count, timestamp]
+              properties:
+                space_id:
+                  type: string
+                  description: "비콘이 설치된 공간 ID (위치 비식별화)"
+                beacon_uuid:
+                  type: string
+                  description: "비콘 고유 식별자"
+                rssi_value:
+                  type: number
+                  format: float
+                  description: "윈도우 평균 RSSI (dBm)"
+                sample_count:
+                  type: integer
+                  description: "평균 산출에 사용된 샘플 수"
+                signal_strength_stdev:
+                  type: number
+                  format: float
+                  description: "신호 강도 표준편차 (데이터 신뢰도 지표)"
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: "ISO 8601 형식 데이터 수집 시각"
+      responses:
+        '201':
+          description: "데이터 수신 및 기록 완료"
+
+  # [AI Layer]
+  /ai/occupancy-status:
+    get:
+      summary: "공간 점유 판별 결과 조회"
+      tags: [AI Layer]
+      description: ML 모듈이 판별한 특정 공간의 현재 점유 상태(Occupied/Vacant)를 반환합니다.
+      parameters:
+        - name: space_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIResult'
+
+  /ai/predictions:
+    get:
+      summary: "에너지 사용 예측 및 이상 탐지 데이터 조회"
+      tags: [AI Layer]
+      description: DL 모듈이 분석한 향후 에너지 사용 예측 및 이상 사용(패턴 이탈) 여부를 반환합니다.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    space_id: { type: string }
+                    predicted_load: { type: string, enum: [High, Medium, Low] }
+                    is_anomaly: { type: boolean }
+                    insight_summary: { type: string }
+              example:
+                - space_id: "RM-101"
+                  predicted_load: "High"
+                  is_anomaly: true
+                  insight_summary: "평소보다 에너지 낭비 위험이 컸던 구간입니다."
+
+  # [Student App]
+  /missions/recommendations:
+    get:
+      summary: "AI 기반 추천 미션 목록 조회"
+      tags: [Student App]
+      description: AI 기반 맞춤형 미션 목록을 조회하며, 고부하 시간대 보너스 정보가 포함됩니다.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mission'
+
+  /missions/{id}/complete:
+    post:
+      summary: "미션 완료 및 보상 처리"
+      tags: [Student App]
+      description: 미션 수행 결과를 백엔드 검증 로직과 대조하여 완료 처리하고 보상을 지급합니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserReward'
+
+  /feedback/natural-language:
+    get:
+      summary: "LLM 행동 의미 피드백 메시지 조회"
+      tags: [Student App]
+      description: LLM이 생성한 '행동 의미 강화' 피드백을 조회합니다.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  feedback_message: { type: string }
+              example:
+                feedback_message: "오늘 귀하의 절약 행동 덕분에 탄소 배출량이 20% 감소했습니다. 캠퍼스의 영웅이 되어주셔서 감사합니다! 🌱"
+
+  # [Admin Web]
+  /admin/dashboard/summary:
+    get:
+      summary: "전체 운영 현황 요약 리포트"
+      tags: [Admin Web]
+      description: 실시간 점유 현황과 AI 기반 요약 리포트를 통합 조회합니다.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_occupied: { type: integer }
+                  anomalies_detected: { type: integer }
+                  llm_insight_report: { type: string }
+
+  /admin/spaces/{id}/thresholds:
+    patch:
+      summary: "공간 점유 판별 임계값 조정 (Model Drift 대응)"
+      tags: [Admin Web]
+      description: 관리자가 현장 상황에 맞춰 임계값을 미세 조정하는 'Feedback Loop' 역할을 합니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [new_threshold, adjustment_reason]
+              properties:
+                new_threshold: { type: number, format: float }
+                adjustment_reason: { type: string }
+      responses:
+        '200':
+          description: "임계값 반영 완료"
+
+components:
+  schemas:
+    SensorData:
+      type: object
+      properties:
+        space_id: { type: string, description: "공간 식별자" }
+        rssi_avg: { type: number, format: float, description: "정제된 RSSI 평균" }
+        timestamp: { type: string, format: date-time }
+
+    Mission:
+      type: object
+      properties:
+        mission_id: { type: string }
+        title: { type: string }
+        bonus_points: { type: integer, example: 20 }
+        recommendation_reason: { type: string, description: "AI가 분석한 추천 사유" }
+        is_high_load_window: { type: boolean }
+
+    AIResult:
+      type: object
+      properties:
+        status: { type: string, enum: [Occupied, Vacant] }
+        confidence: { type: number, format: float }
+        insight_text: { type: string }
+
+    UserReward:
+      type: object
+      properties:
+        user_id_hash: { type: string }
+        total_points: { type: integer }
+        character_level: { type: integer }
+        earned_points: { type: integer }
+
+    SpaceInfo:
+      type: object
+      properties:
+        space_id: { type: string }
+        threshold_value: { type: number, format: float }
+        is_active: { type: boolean }
