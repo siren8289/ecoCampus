@@ -24,6 +24,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "scheme": "ecocampus",
+    "plugins": [
+      "expo-asset",
+      "expo-router"
+    ]
   }
 }
