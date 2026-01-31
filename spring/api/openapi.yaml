@@ -1,0 +1,762 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: Beacon
+  description: 비콘 관리 API
+- name: Space
+  description: 공간 관리 API
+- name: RaspberryPi
+  description: 라즈베리파이 기기 관리 API
+- name: AiInferenceLog
+  description: AI 추론 로그 관리 API
+- name: RssiLog
+  description: RSSI 로그 관리 API
+- name: Mission
+  description: 미션 관리 API
+- name: Admin
+  description: 관리자 관리 API
+- name: EntryLog
+  description: 출입 기록 관리 API
+- name: Student
+  description: 학생 관리 API
+paths:
+  /api/students:
+    get:
+      tags:
+      - Student
+      summary: 모든 학생 조회
+      operationId: getAllStudents
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudentDto"
+    post:
+      tags:
+      - Student
+      summary: 학생 생성
+      operationId: createStudent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/StudentDto"
+  /api/spaces:
+    get:
+      tags:
+      - Space
+      summary: 모든 공간 조회
+      operationId: getAllSpaces
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SpaceDto"
+    post:
+      tags:
+      - Space
+      summary: 공간 생성
+      operationId: createSpace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpaceDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SpaceDto"
+  /api/rssilogs:
+    get:
+      tags:
+      - RssiLog
+      summary: 모든 RSSI 로그 조회
+      operationId: getAllRssiLogs
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RssiLogDto"
+    post:
+      tags:
+      - RssiLog
+      summary: RSSI 로그 생성
+      operationId: createRssiLog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RssiLogDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RssiLogDto"
+  /api/raspberrypis:
+    get:
+      tags:
+      - RaspberryPi
+      summary: 모든 라즈베리파이 조회
+      operationId: getAllRaspberryPis
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RaspberryPiDto"
+    post:
+      tags:
+      - RaspberryPi
+      summary: 라즈베리파이 생성
+      operationId: createRaspberryPi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RaspberryPiDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RaspberryPiDto"
+  /api/missions:
+    get:
+      tags:
+      - Mission
+      summary: 모든 미션 조회
+      operationId: getAllMissions
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MissionDto"
+    post:
+      tags:
+      - Mission
+      summary: 미션 생성
+      operationId: createMission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MissionDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MissionDto"
+  /api/entrylogs:
+    get:
+      tags:
+      - EntryLog
+      summary: 모든 출입 기록 조회
+      operationId: getAllEntryLogs
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EntryLogDto"
+    post:
+      tags:
+      - EntryLog
+      summary: 출입 기록 생성
+      operationId: createEntryLog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntryLogDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/EntryLogDto"
+  /api/beacons:
+    get:
+      tags:
+      - Beacon
+      summary: 모든 비콘 조회
+      operationId: getAllBeacons
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BeaconDto"
+    post:
+      tags:
+      - Beacon
+      summary: 비콘 생성
+      operationId: createBeacon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BeaconDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BeaconDto"
+  /api/ai-inference-logs:
+    get:
+      tags:
+      - AiInferenceLog
+      summary: 모든 AI 추론 로그 조회
+      operationId: getAllAiInferenceLogs
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AiInferenceLogDto"
+    post:
+      tags:
+      - AiInferenceLog
+      summary: AI 추론 로그 생성
+      operationId: createAiInferenceLog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiInferenceLogDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AiInferenceLogDto"
+  /api/admins:
+    get:
+      tags:
+      - Admin
+      summary: 모든 관리자 조회
+      operationId: getAllAdmins
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminDto"
+    post:
+      tags:
+      - Admin
+      summary: 관리자 생성
+      operationId: createAdmin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminDto"
+  /api/students/{studentId}:
+    get:
+      tags:
+      - Student
+      summary: 특정 학생 조회
+      operationId: getStudent
+      parameters:
+      - name: studentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/StudentDto"
+    delete:
+      tags:
+      - Student
+      summary: 학생 삭제
+      operationId: deleteStudent
+      parameters:
+      - name: studentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /api/spaces/{spaceId}:
+    get:
+      tags:
+      - Space
+      summary: 특정 공간 조회
+      operationId: getSpace
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SpaceDto"
+    delete:
+      tags:
+      - Space
+      summary: 공간 삭제
+      operationId: deleteSpace
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /api/rssilogs/{rssiLogId}:
+    get:
+      tags:
+      - RssiLog
+      summary: 특정 RSSI 로그 조회
+      operationId: getRssiLog
+      parameters:
+      - name: rssiLogId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RssiLogDto"
+    delete:
+      tags:
+      - RssiLog
+      summary: RSSI 로그 삭제
+      operationId: deleteRssiLog
+      parameters:
+      - name: rssiLogId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/raspberrypis/{deviceId}:
+    get:
+      tags:
+      - RaspberryPi
+      summary: 특정 라즈베리파이 조회
+      operationId: getRaspberryPi
+      parameters:
+      - name: deviceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RaspberryPiDto"
+    delete:
+      tags:
+      - RaspberryPi
+      summary: 라즈베리파이 삭제
+      operationId: deleteRaspberryPi
+      parameters:
+      - name: deviceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /api/missions/{missionId}:
+    get:
+      tags:
+      - Mission
+      summary: 특정 미션 조회
+      operationId: getMission
+      parameters:
+      - name: missionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MissionDto"
+    delete:
+      tags:
+      - Mission
+      summary: 미션 삭제
+      operationId: deleteMission
+      parameters:
+      - name: missionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /api/entrylogs/{entryId}:
+    get:
+      tags:
+      - EntryLog
+      summary: 특정 출입 기록 조회
+      operationId: getEntryLog
+      parameters:
+      - name: entryId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/EntryLogDto"
+    delete:
+      tags:
+      - EntryLog
+      summary: 출입 기록 삭제
+      operationId: deleteEntryLog
+      parameters:
+      - name: entryId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/beacons/{beaconUuid}:
+    get:
+      tags:
+      - Beacon
+      summary: 특정 비콘 조회
+      operationId: getBeacon
+      parameters:
+      - name: beaconUuid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BeaconDto"
+    delete:
+      tags:
+      - Beacon
+      summary: 비콘 삭제
+      operationId: deleteBeacon
+      parameters:
+      - name: beaconUuid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /api/ai-inference-logs/{inferenceId}:
+    get:
+      tags:
+      - AiInferenceLog
+      summary: 특정 AI 추론 로그 조회
+      operationId: getAiInferenceLog
+      parameters:
+      - name: inferenceId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AiInferenceLogDto"
+    delete:
+      tags:
+      - AiInferenceLog
+      summary: AI 추론 로그 삭제
+      operationId: deleteAiInferenceLog
+      parameters:
+      - name: inferenceId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/admins/{adminId}:
+    get:
+      tags:
+      - Admin
+      summary: 특정 관리자 조회
+      operationId: getAdmin
+      parameters:
+      - name: adminId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminDto"
+    delete:
+      tags:
+      - Admin
+      summary: 관리자 삭제
+      operationId: deleteAdmin
+      parameters:
+      - name: adminId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    StudentDto:
+      type: object
+      properties:
+        studentId:
+          type: string
+        totalPoint:
+          type: integer
+          format: int32
+        rankScore:
+          type: number
+          format: float
+        charLevel:
+          type: integer
+          format: int32
+        createdAt:
+          type: string
+          format: date-time
+    SpaceDto:
+      type: object
+      properties:
+        spaceId:
+          type: string
+        locationCode:
+          type: string
+        occThreshold:
+          type: number
+          format: float
+        updatedAt:
+          type: string
+          format: date-time
+    RssiLogDto:
+      type: object
+      properties:
+        rssiLogId:
+          type: integer
+          format: int64
+        beaconUuid:
+          type: string
+        deviceId:
+          type: string
+        rssiValue:
+          type: number
+          format: float
+        recordedAt:
+          type: string
+          format: date-time
+    RaspberryPiDto:
+      type: object
+      properties:
+        deviceId:
+          type: string
+        ipAddress:
+          type: string
+        statusLog:
+          type: string
+        lastSeenAt:
+          type: string
+          format: date-time
+    MissionDto:
+      type: object
+      properties:
+        missionId:
+          type: string
+        missionType:
+          type: string
+        basePoint:
+          type: integer
+          format: int32
+        bonusCondition:
+          type: string
+    EntryLogDto:
+      type: object
+      properties:
+        entryId:
+          type: integer
+          format: int64
+        studentId:
+          type: string
+        missionId:
+          type: string
+        inferenceId:
+          type: integer
+          format: int64
+        completionType:
+          type: string
+        earnedPoint:
+          type: integer
+          format: int32
+        participatedAt:
+          type: string
+          format: date-time
+    BeaconDto:
+      type: object
+      properties:
+        beaconUuid:
+          type: string
+        spaceId:
+          type: string
+        signalInterval:
+          type: integer
+          format: int32
+    AiInferenceLogDto:
+      type: object
+      properties:
+        inferenceId:
+          type: integer
+          format: int64
+        spaceId:
+          type: string
+        mlOccupied:
+          type: boolean
+        dlAnomalyScore:
+          type: number
+          format: float
+        llmFeedback:
+          type: string
+        isConfirmed:
+          type: boolean
+        inferredAt:
+          type: string
+          format: date-time
+    AdminDto:
+      type: object
+      properties:
+        adminId:
+          type: string
+        role:
+          type: string
+        managedSpaceId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
