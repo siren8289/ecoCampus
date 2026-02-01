@@ -36,11 +36,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Use setAllowedOrigins (not Patterns) for strict credential support
-        configuration.setAllowedOrigins(List.of(
+        // Use setAllowedOriginPatterns to support dynamic Vercel preview URLs
+        configuration.setAllowedOriginPatterns(List.of(
             "http://localhost:3000",
-            "https://eco-campus-74oulz10g-siren8289s-projects.vercel.app",
-            "https://eco-campus-7wqywc9gn-siren8289s-projects.vercel.app"
+            "https://eco-campus-*.vercel.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
