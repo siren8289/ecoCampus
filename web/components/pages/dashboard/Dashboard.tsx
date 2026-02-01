@@ -31,6 +31,7 @@ export default function Dashboard() {
         // fetchSpaces는 실패 시 throw Error하므로 catch로 잡아야 함
         // 하지만 실패했다고 해서 무조건 오프라인은 아님 (404 등)
         const spaceData = await import('@/lib/api').then(m => m.fetchSpaces());
+        console.log("✅ Render 서버 데이터 수신 성공:", spaceData);
         const mappedRooms: Room[] = spaceData.map((space) => ({
           id: space.spaceId,
           name: space.locationCode,
