@@ -20,9 +20,10 @@ export default function Dashboard() {
     setLastSync(new Date());
 
     // Vercel ↔ Render 연결 확인용 코드
-    checkServer().then(isOnline =>
-      setServerStatus(isOnline ? 'online' : 'offline')
-    );
+    // checkServer().then(isOnline =>
+    //   setServerStatus(isOnline ? 'online' : 'offline')
+    // );
+
 
     // 1. 초기 데이터 로드
     const loadRooms = async () => {
@@ -51,9 +52,9 @@ export default function Dashboard() {
 
     const interval = setInterval(() => {
       // 연결 상태 재확인
-      checkServer().then(isOnline =>
-        setServerStatus(isOnline ? 'online' : 'offline')
-      );
+      // checkServer().then(isOnline =>
+      //   setServerStatus(isOnline ? 'online' : 'offline')
+      // );
 
       setRooms(prevRooms =>
         prevRooms.map(room => {
