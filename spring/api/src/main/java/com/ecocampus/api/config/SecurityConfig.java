@@ -18,11 +18,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS (Keep this!)
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/**", "/health").permitAll()
-                .anyRequest().permitAll() // Allow all for now
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui /**",
+                    "/swagger-ui.html"
+                ).permitAll()
+                .requestMatchers("/api/**", "/health").permitAll() // Keep API public for now
+                .anyRequest().authenticated() // As per user recommendation
             );
         return http.build();
     }
