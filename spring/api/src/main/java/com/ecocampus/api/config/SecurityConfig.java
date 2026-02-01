@@ -18,16 +18,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS (Keep this!)
             .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
-                    "/swagger-ui.html"
+                    "/swagger-ui.html",
+                    "/api/**",
+                    "/health"
                 ).permitAll()
-                .requestMatchers("/api/**", "/health").permitAll() // Keep API public for now
-                .anyRequest().authenticated() // As per user recommendation
+                .anyRequest().permitAll() // Allow everything for diagnosis
             );
         return http.build();
     }
@@ -35,9 +36,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of(
+        // Use setAllowedOrigins (not Patterns) for strict credential support
+        configuration.setAllowedOrigins(List.of(
             "http://localhost:3000",
-            "https://*.vercel.app"
+            "https://eco-campus-74oulz10g-siren8289s-projects.vercel.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
