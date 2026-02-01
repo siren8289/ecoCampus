@@ -26,7 +26,7 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
 # 빌드 결과물(jar)만 복사
-COPY --from=builder /app/api/build/libs/*.jar app.jar
+COPY --from=builder /app/api/build/libs/*-SNAPSHOT.jar app.jar
 
 # 기본 포트 노출
 EXPOSE 8080
