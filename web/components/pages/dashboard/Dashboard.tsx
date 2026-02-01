@@ -18,13 +18,10 @@ export default function Dashboard() {
     setMounted(true);
     setLastSync(new Date());
 
-    // Vercel ↔ Render 연결 확인용 코드 (직접 fetch)
+    // Vercel ↔ Render 연결 확인용 코드
     const checkConnection = () => {
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/spaces`)
-        .then(res => {
-          if (!res.ok) throw new Error();
-          setServerStatus('online');
-        })
+      fetchSpaces()
+        .then(() => setServerStatus('online'))
         .catch(() => setServerStatus('offline'));
     };
 
