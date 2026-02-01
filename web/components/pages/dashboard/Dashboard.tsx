@@ -6,6 +6,7 @@ import { AIInsightCard } from '@/features/dashboard/AIInsightCard';
 import { AnomalyAlert } from '@/features/dashboard/AnomalyAlert';
 import { RefreshCw, Wifi, WifiOff } from 'lucide-react';
 import { Room, generateMockRooms } from '@/lib/mockData';
+import { fetchSpaces, fetchHealth } from '@/lib/api';
 
 export default function Dashboard() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -15,21 +16,48 @@ export default function Dashboard() {
 
   useEffect(() => {
     setMounted(true);
-    setRooms(generateMockRooms());
     setLastSync(new Date());
 
-    // Vercel ↔ Render 연결 확인용 코드
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/health`)
-      .then(res => {
-        if (!res.ok) throw new Error("API error");
-        return res.json();
-      })
-      .then(() => setServerStatus('online'))
-      .catch(() => setServerStatus('offline'));
+    // 1. 초기 데이터 로드 (API)
+    const loadRooms = async () => {
+      try {
+        const spaceData = await fetchSpaces();
+        // API 데이터를 Room 타입으로 변환
+        const mappedRooms: Room[] = spaceData.map((space) => ({
+          id: space.spaceId,
+          name: space.locationCode, // 예: "101호"
+          building: space.locationCode.split('-')[0] || '공학관', // 가칭
+          capacity: Math.floor(space.occThreshold || 30),
+          currentOccupancy: 0, // 초기값
+          status: 'available',
+          rssi: -90,
+          lastUpdate: new Date(space.updatedAt || Date.now()),
+        }));
+        setRooms(mappedRooms);
+        setServerStatus('online');
+      } catch (error) {
+        console.error("Failed to fetch spaces:", error);
+        setServerStatus('offline');
+        // 실패 시 목업 데이터 사용 (개발 편의성)
+        setRooms(generateMockRooms());
+      }
+    };
 
+    loadRooms();
+
+    // Vercel ↔ Render 연결 확인용 코드 (주기적 확인)
+    const checkHealth = () => {
+      fetchHealth().then(isOk => setServerStatus(isOk ? 'online' : 'offline'));
+    };
+
+    // 2. 실시간 시뮬레이션 (Occupancy/RSSI는 아직 API가 없으므로 프론트에서 시뮬레이션)
     const interval = setInterval(() => {
+      // 헬스 체크
+      checkHealth();
+
       setRooms(prevRooms =>
         prevRooms.map(room => {
+          // 랜덤 변화 시뮬레이션 (백엔드 연동 전까지 유지)
           if (Math.random() < 0.15) {
             const change = Math.floor(Math.random() * 6) - 3;
             const newOccupancy = Math.max(0, Math.min(room.capacity, room.currentOccupancy + change));
@@ -39,7 +67,6 @@ export default function Dashboard() {
             else if (newOccupancy >= room.capacity * 0.9) newStatus = 'full';
             else newStatus = 'occupied';
 
-            // RSSI 값을 -90 ~ -30 사이로 제한
             const newRssi = Math.max(-90, Math.min(-30, -50 + Math.floor(Math.random() * 40)));
 
             return {
@@ -47,7 +74,7 @@ export default function Dashboard() {
               currentOccupancy: newOccupancy,
               status: newStatus,
               rssi: newRssi,
-              lastUpdate: new Date(), // Client side execution is fine
+              lastUpdate: new Date(),
             };
           }
           return room;
