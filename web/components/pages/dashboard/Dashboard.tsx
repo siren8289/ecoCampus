@@ -7,13 +7,17 @@ import { AnomalyAlert } from '@/features/dashboard/AnomalyAlert';
 import { RefreshCw, Wifi, WifiOff } from 'lucide-react';
 import { Room, generateMockRooms } from '@/lib/mockData';
 
-export function Dashboard() {
-  const [rooms, setRooms] = useState<Room[]>(generateMockRooms());
-  const [lastSync, setLastSync] = useState(new Date());
+export default function Dashboard() {
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [lastSync, setLastSync] = useState<Date | null>(null);
   const [serverStatus, setServerStatus] = useState<'online' | 'offline'>('online');
+  const [mounted, setMounted] = useState(false);
 
-  // 실시간 업데이트 시뮬레이션
   useEffect(() => {
+    setMounted(true);
+    setRooms(generateMockRooms());
+    setLastSync(new Date());
+
     const interval = setInterval(() => {
       setRooms(prevRooms =>
         prevRooms.map(room => {
@@ -26,15 +30,15 @@ export function Dashboard() {
             else if (newOccupancy >= room.capacity * 0.9) newStatus = 'full';
             else newStatus = 'occupied';
 
-            // RSSI 값 업데이트
-            const newRssi = -50 + Math.floor(Math.random() * 40);
+            // RSSI 값을 -90 ~ -30 사이로 제한
+            const newRssi = Math.max(-90, Math.min(-30, -50 + Math.floor(Math.random() * 40)));
 
             return {
               ...room,
               currentOccupancy: newOccupancy,
               status: newStatus,
               rssi: newRssi,
-              lastUpdate: new Date(),
+              lastUpdate: new Date(), // Client side execution is fine
             };
           }
           return room;
@@ -45,6 +49,10 @@ export function Dashboard() {
 
     return () => clearInterval(interval);
   }, []);
+
+  if (!mounted) {
+    return null; // or a loading skeleton
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -60,7 +68,7 @@ export function Dashboard() {
               <div className="flex items-center gap-6 mt-3 text-gray-600">
                 <div className="flex items-center gap-2">
                   <RefreshCw className="w-4 h-4" />
-                  <span>마지막 동기화: {lastSync.toLocaleTimeString('ko-KR')}</span>
+                  <span>마지막 동기화: {lastSync?.toLocaleTimeString('ko-KR')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   {serverStatus === 'online' ? (
