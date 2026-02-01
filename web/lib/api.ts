@@ -1,4 +1,6 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080').replace(/\/$/, "");
+
+console.log('API BASE URL =', API_BASE_URL);
 
 export interface SpaceDto {
   spaceId: string;

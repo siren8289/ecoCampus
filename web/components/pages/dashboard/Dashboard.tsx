@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    console.log('API BASE URL =', process.env.NEXT_PUBLIC_API_BASE_URL);
     setMounted(true);
     setLastSync(new Date());
 
