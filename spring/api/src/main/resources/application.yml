@@ -6,7 +6,7 @@ spring:
     active: dev # 활성화할 프로파일 (dev, prod 등)
 
   datasource: # 데이터베이스 연결 설정
-    url: jdbc:postgresql://localhost:5432/ecocampus # PostgreSQL URL (기본 포트: 5432, DB명: ecocampus)
+    url:  # PostgreSQL URL (기본 포트: 5432, DB명: ecocampus)
     driver-class-name: org.postgresql.Driver # PostgreSQL 드라이버 클래스
     username: postgres # DB 사용자명
     password: # DB 비밀번호 (없음)
