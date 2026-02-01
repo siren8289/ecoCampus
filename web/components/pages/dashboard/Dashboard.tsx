@@ -18,6 +18,15 @@ export default function Dashboard() {
     setRooms(generateMockRooms());
     setLastSync(new Date());
 
+    // Vercel ↔ Render 연결 확인용 코드
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/health`)
+      .then(res => {
+        if (!res.ok) throw new Error("API error");
+        return res.json();
+      })
+      .then(() => setServerStatus('online'))
+      .catch(() => setServerStatus('offline'));
+
     const interval = setInterval(() => {
       setRooms(prevRooms =>
         prevRooms.map(room => {
