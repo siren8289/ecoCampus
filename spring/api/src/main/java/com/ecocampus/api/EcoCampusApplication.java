@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = "com.ecocampus")
-@EntityScan(basePackages = "com.ecocampus.api")
-@EnableJpaRepositories(basePackages = "com.ecocampus.api")
+@EntityScan(basePackages = "com.ecocampus")
+@EnableJpaRepositories(basePackages = "com.ecocampus")
 public class EcoCampusApplication {
 
     public static void main(String[] args) {
