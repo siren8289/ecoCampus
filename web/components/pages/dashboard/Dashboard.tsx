@@ -6,7 +6,7 @@ import { AIInsightCard } from '@/features/dashboard/AIInsightCard';
 import { AnomalyAlert } from '@/features/dashboard/AnomalyAlert';
 import { RefreshCw, Wifi, WifiOff } from 'lucide-react';
 import { Room, generateMockRooms } from '@/lib/mockData';
-import { fetchSpaces, fetchHealth } from '@/lib/api';
+import { fetchSpaces } from '@/lib/api';
 
 export default function Dashboard() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -45,15 +45,17 @@ export default function Dashboard() {
 
     loadRooms();
 
-    // Vercel ↔ Render 연결 확인용 코드 (주기적 확인)
-    const checkHealth = () => {
-      fetchHealth().then(isOk => setServerStatus(isOk ? 'online' : 'offline'));
+    // 실제 API(fetchSpaces)를 사용하여 서버 상태 주기적 확인
+    const checkConnection = () => {
+      fetchSpaces()
+        .then(() => setServerStatus('online'))
+        .catch(() => setServerStatus('offline'));
     };
 
-    // 2. 실시간 시뮬레이션 (Occupancy/RSSI는 아직 API가 없으므로 프론트에서 시뮬레이션)
+    // 2. 실시간 시뮬레이션
     const interval = setInterval(() => {
-      // 헬스 체크
-      checkHealth();
+      // 연결 상태 확인
+      checkConnection();
 
       setRooms(prevRooms =>
         prevRooms.map(room => {

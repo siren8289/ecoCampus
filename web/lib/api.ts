@@ -15,11 +15,4 @@ export async function fetchSpaces(): Promise<SpaceDto[]> {
   return res.json();
 }
 
-export async function fetchHealth(): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/health`);
-    return res.ok;
-  } catch (e) {
-    return false;
-  }
-}
+
