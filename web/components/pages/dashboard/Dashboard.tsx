@@ -6,7 +6,7 @@ import { AIInsightCard } from '@/features/dashboard/AIInsightCard';
 import { AnomalyAlert } from '@/features/dashboard/AnomalyAlert';
 import { RefreshCw, Wifi, WifiOff } from 'lucide-react';
 import { Room, generateMockRooms } from '@/lib/mockData';
-import { fetchSpaces } from '@/lib/api';
+import { checkServer } from '@/lib/api';
 
 export default function Dashboard() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -19,17 +19,16 @@ export default function Dashboard() {
     setLastSync(new Date());
 
     // Vercel ↔ Render 연결 확인용 코드
-    const checkConnection = () => {
-      fetchSpaces()
-        .then(() => setServerStatus('online'))
-        .catch(() => setServerStatus('offline'));
-    };
-
-    checkConnection();
+    // Vercel ↔ Render 연결 확인용 코드
+    checkServer().then(isOnline =>
+      setServerStatus(isOnline ? 'online' : 'offline')
+    );
 
     const interval = setInterval(() => {
       // 연결 상태 재확인
-      checkConnection();
+      checkServer().then(isOnline =>
+        setServerStatus(isOnline ? 'online' : 'offline')
+      );
 
       setRooms(prevRooms =>
         prevRooms.map(room => {
