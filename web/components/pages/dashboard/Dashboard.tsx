@@ -18,43 +18,20 @@ export default function Dashboard() {
     setMounted(true);
     setLastSync(new Date());
 
-    // 1. 초기 데이터 로드 (API)
-    const loadRooms = async () => {
-      try {
-        const spaceData = await fetchSpaces();
-        // API 데이터를 Room 타입으로 변환
-        const mappedRooms: Room[] = spaceData.map((space) => ({
-          id: space.spaceId,
-          name: space.locationCode, // 예: "101호"
-          building: space.locationCode.split('-')[0] || '공학관', // 가칭
-          capacity: Math.floor(space.occThreshold || 30),
-          currentOccupancy: 0, // 초기값
-          status: 'available',
-          rssi: -90,
-          lastUpdate: new Date(space.updatedAt || Date.now()),
-        }));
-        setRooms(mappedRooms);
-        setServerStatus('online');
-      } catch (error) {
-        console.error("Failed to fetch spaces:", error);
-        setServerStatus('offline');
-        // 실패 시 목업 데이터 사용 (개발 편의성)
-        setRooms(generateMockRooms());
-      }
-    };
-
-    loadRooms();
-
-    // 실제 API(fetchSpaces)를 사용하여 서버 상태 주기적 확인
+    // Vercel ↔ Render 연결 확인용 코드 (직접 fetch)
     const checkConnection = () => {
-      fetchSpaces()
-        .then(() => setServerStatus('online'))
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/spaces`)
+        .then(res => {
+          if (!res.ok) throw new Error();
+          setServerStatus('online');
+        })
         .catch(() => setServerStatus('offline'));
     };
 
-    // 2. 실시간 시뮬레이션
+    checkConnection();
+
     const interval = setInterval(() => {
-      // 연결 상태 확인
+      // 연결 상태 재확인
       checkConnection();
 
       setRooms(prevRooms =>
