@@ -23,5 +23,13 @@ export async function checkServer(): Promise<boolean> {
   }
 }
 
+export async function fetchSpaces(): Promise<SpaceDto[]> {
+  const res = await fetch(`${API_BASE_URL}/api/spaces`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch spaces');
+  }
+  return res.json();
+}
+
 
 

@@ -20,10 +20,34 @@ export default function Dashboard() {
     setLastSync(new Date());
 
     // Vercel ↔ Render 연결 확인용 코드
-    // Vercel ↔ Render 연결 확인용 코드
     checkServer().then(isOnline =>
       setServerStatus(isOnline ? 'online' : 'offline')
     );
+
+    // 1. 초기 데이터 로드
+    const loadRooms = async () => {
+      try {
+        // fetchSpaces는 실패 시 throw Error하므로 catch로 잡아야 함
+        // 하지만 실패했다고 해서 무조건 오프라인은 아님 (404 등)
+        const spaceData = await import('@/lib/api').then(m => m.fetchSpaces());
+        const mappedRooms: Room[] = spaceData.map((space) => ({
+          id: space.spaceId,
+          name: space.locationCode,
+          building: space.locationCode.split('-')[0] || '공학관',
+          capacity: Math.floor(space.occThreshold || 30),
+          currentOccupancy: 0,
+          status: 'available',
+          rssi: -90,
+          lastUpdate: new Date(space.updatedAt || Date.now()),
+        }));
+        setRooms(mappedRooms);
+      } catch (error) {
+        console.error("Failed to fetch spaces:", error);
+        // 실패 시 목업 데이터 사용하되, 서버 상태는 건드리지 않음 (checkServer에 위임)
+        setRooms(generateMockRooms());
+      }
+    };
+    loadRooms();
 
     const interval = setInterval(() => {
       // 연결 상태 재확인
