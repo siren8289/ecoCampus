@@ -43,7 +43,16 @@ ai/
 
 ---
 
-## 🚀 돌려보기
+## � Spring Boot 연동 (Backend)
+Spring 서버(`:api`)가 Python AI 서버를 호출해서 결과를 DB에 저장합니다.
+
+- **AIClient**: `RestTemplate`으로 `/ai/infer` 찌릅니다.
+- **AIService**: 공간 정보랑 센서 데이터 합쳐서 AI한테 물어보고, 결과(`AiInferenceLog`)를 저장합니다.
+- **AIController**: 테스트용으로 `POST /api/ai/infer/{spaceId}` 만들어뒀습니다.
+
+---
+
+## �🚀 돌려보기
 
 ### 1. 데이터 준비 (DB 초기화)
 기준 패턴을 생성해서 PostgreSQL에 때려 넣습니다.
