@@ -58,3 +58,6 @@ springdoc: # Swagger UI (API 문서) 설정
   paths-to-match: # 문서화할 API 경로 패턴
     - /**
 
+ai:
+  api:
+    url: http://localhost:8000

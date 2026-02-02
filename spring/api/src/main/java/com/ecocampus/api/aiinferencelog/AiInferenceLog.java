@@ -40,6 +40,13 @@ public class AiInferenceLog {
     @Column(name = "dl_anomaly_score")
     private Float dlAnomalyScore;
 
+    @Column(name = "usage_status")
+    private String usageStatus; // Active, Idle, Overuse
+
+    @Column(name = "value_zone")
+    private String valueZone;   // HIGH, MID, RISK
+
+
     @Column(name = "llm_feedback", columnDefinition = "TEXT")
     private String llmFeedback;
 
